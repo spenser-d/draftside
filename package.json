@@ -1,43 +1,42 @@
 {
-  "name": "sites-project",
+  "name": "draftside",
   "version": "0.1.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "vinext start",
-    "test": "node --test --experimental-strip-types tests/*.test.ts",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "dev": "concurrently -k -n api,web -c blue,green \"npm run dev:api\" \"vite\"",
+    "dev:api": "cd backend && go run ./cmd/draftside",
+    "dev:web": "vite",
+    "build": "npm run build:web && npm run build:api",
+    "build:web": "tsc --noEmit && vite build",
+    "build:api": "cd backend && go build -o ../bin/draftside ./cmd/draftside",
+    "start": "./bin/draftside",
+    "test": "npm run test:web && cd backend && go test ./...",
+    "test:web": "tsc --noEmit",
+    "lint": "eslint . && cd backend && go vet ./..."
   },
   "dependencies": {
-    "next": "16.2.6",
     "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "drizzle-orm": "0.45.2"
+    "react-dom": "19.2.6"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@cloudflare/workers-types": "4.20260515.1",
-    "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
-    "@tailwindcss/postcss": "4.2.1",
+    "@eslint/js": "^9.39.4",
+    "@tailwindcss/vite": "^4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
+    "@vitejs/plugin-react": "^6.0.2",
+    "concurrently": "^9.2.1",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.3.0",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
-    "vinext": "1.0.0-beta.3",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0",
-    "drizzle-kit": "0.31.10"
+    "typescript-eslint": "^8.57.1",
+    "vite": "^8.0.13"
   },
   "type": "module"
 }
